@@ -155,7 +155,10 @@ class _DetailContent extends StatelessWidget {
             background: Stack(
               fit: StackFit.expand,
               children: [
-                MealImage(imageUrl: meal.strMealThumb),
+                MealImage(
+                  key: ValueKey(meal.idMeal),
+                  imageUrl: meal.strMealThumb,
+                ),
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +50,12 @@ class MealCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: MealImage(imageUrl: meal.strMealThumb)),
+                    Expanded(
+                      child: MealImage(
+                        key: ValueKey(meal.idMeal),
+                        imageUrl: meal.strMealThumb,
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(
                         compact ? 12 : 14,
@@ -143,27 +147,46 @@ class MealImage extends StatelessWidget {
       ),
     );
 
-    final image = imageUrl.isEmpty
+    final image = imageUrl.trim().isEmpty
         ? fallback()
-        : CachedNetworkImage(
-            imageUrl: imageUrl,
+        : Image.network(
+            _thumbnailUrl(imageUrl),
+            key: ValueKey(_thumbnailUrl(imageUrl)),
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
-            placeholder: (_, _) => const ColoredBox(
-              color: Color(0xFFF0F1F2),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: AppTheme.primary,
-                  strokeWidth: 2,
+            filterQuality: FilterQuality.medium,
+            frameBuilder: (_, child, frame, wasSynchronouslyLoaded) {
+              if (wasSynchronouslyLoaded || frame != null) return child;
+              return const ColoredBox(
+                color: Color(0xFFF0F1F2),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.primary,
+                    strokeWidth: 2,
+                  ),
                 ),
-              ),
-            ),
-            errorWidget: (_, _, _) => fallback(),
+              );
+            },
+            errorBuilder: (_, _, _) => fallback(),
           );
     return borderRadius == null
         ? image
         : ClipRRect(borderRadius: borderRadius!, child: image);
+  }
+
+  /// A TheMealDB disponibiliza imagens de tamanho reduzido no mesmo endereço.
+  /// Assim evitamos decodificar os arquivos grandes repetidamente ao voltar de
+  /// uma página externa ou ao sortear outra receita.
+  static String _thumbnailUrl(String value) {
+    final uri = Uri.tryParse(value.trim());
+    if (uri == null || !uri.host.endsWith('themealdb.com')) return value.trim();
+    if (uri.path.endsWith('/small') ||
+        uri.path.endsWith('/medium') ||
+        uri.path.endsWith('/large')) {
+      return uri.toString();
+    }
+    return uri.replace(path: '${uri.path}/medium').toString();
   }
 }
 

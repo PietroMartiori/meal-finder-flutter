@@ -42,24 +42,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Receitas Favoritas',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
-                ),
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(17),
-                  ),
-                  child: const Icon(Icons.more_horiz_rounded),
-                ),
-              ],
+            Text(
+              'Receitas Favoritas',
+              style: Theme.of(context).textTheme.displaySmall,
             ),
             const SizedBox(height: 24),
             const Text(
@@ -71,28 +56,22 @@ class _FavoritesPageState extends State<FavoritesPage> {
               ),
             ),
             const SizedBox(height: 27),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primary,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Todas salvas · ${ids.length}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                color: AppTheme.primary,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'Todas salvas · ${ids.length}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
                 ),
-                const SizedBox(width: 10),
-                const Chip(label: Text('Recentes')),
-              ],
+              ),
             ),
             const SizedBox(height: 20),
             Expanded(child: _buildContent(ids)),

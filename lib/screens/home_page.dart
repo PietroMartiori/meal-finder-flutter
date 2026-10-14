@@ -210,16 +210,6 @@ class _HomeHeader extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: AppTheme.line),
-              borderRadius: BorderRadius.circular(17),
-            ),
-            child: const Icon(Icons.tune_rounded),
-          ),
         ],
       ),
       const SizedBox(height: 25),

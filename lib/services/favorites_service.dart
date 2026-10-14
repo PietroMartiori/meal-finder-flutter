@@ -5,9 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FavoritesService extends ChangeNotifier {
   static const _key = 'favorite_meal_ids';
   final List<String> _ids = [];
-  bool _isLoaded = false;
 
-  bool get isLoaded => _isLoaded;
   List<String> get ids => List.unmodifiable(_ids);
   int get count => _ids.length;
   bool contains(String idMeal) => _ids.contains(idMeal);
@@ -20,7 +18,6 @@ class FavoritesService extends ChangeNotifier {
         ..clear()
         ..addAll(savedIds.where((id) => id.trim().isNotEmpty).toSet());
     } finally {
-      _isLoaded = true;
       notifyListeners();
     }
   }

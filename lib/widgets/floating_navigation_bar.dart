@@ -16,7 +16,6 @@ class FloatingNavigationBar extends StatelessWidget {
     (icon: Icons.home_outlined, label: 'Início'),
     (icon: Icons.search_rounded, label: 'Buscar'),
     (icon: Icons.favorite_border_rounded, label: 'Favoritos'),
-    (icon: Icons.chat_bubble_outline_rounded, label: 'Chat'),
     (icon: Icons.person_outline_rounded, label: 'Perfil'),
   ];
 

@@ -6,7 +6,7 @@ Aplicativo acadêmico em Flutter para descobrir receitas internacionais. O MealF
 
 | Início | Buscar | Favoritos | Descobrir | Perfil |
 | --- | --- | --- | --- | --- |
-| Saudação, categorias, carrossel e destaques | Busca por nome e filtros | Coleção persistida localmente | Receita aleatória | Preferências locais |
+| Saudação, categorias, carrossel e destaques | Busca por nome e filtros | Coleção persistida localmente | Receita aleatória | Resumo dos favoritos locais |
 
 A interface foi construída a partir dos wireframes fornecidos: fundo claro, cartões brancos com cantos arredondados, cor de destaque `#FF6B35` e barra de navegação flutuante.
 
@@ -24,7 +24,7 @@ Os sete wireframes originais continuam versionados em [`tmp/pdfs`](tmp/pdfs). El
 - [Provider](https://pub.dev/packages/provider) para estado
 - [http](https://pub.dev/packages/http) para a TheMealDB
 - [shared_preferences](https://pub.dev/packages/shared_preferences) para IDs favoritos locais
-- [cached_network_image](https://pub.dev/packages/cached_network_image) para imagens
+- Imagens otimizadas da própria TheMealDB via `Image.network`
 - [url_launcher](https://pub.dev/packages/url_launcher) para tutoriais em vídeo
 
 ## TheMealDB: tela x endpoint
@@ -39,7 +39,7 @@ Os sete wireframes originais continuam versionados em [`tmp/pdfs`](tmp/pdfs). El
 | Buscar por ingrediente | `filter.php?i={ingrediente}`, `list.php?i=list` |
 | Descobrir | `random.php` |
 | Favoritos | IDs locais + `lookup.php?i={idMeal}` |
-| Perfil e Chat | Sem endpoint |
+| Perfil | Sem endpoint |
 
 Todos os endpoints acima usam a base `https://www.themealdb.com/api/json/v1/1/` e foram validados com HTTP 200 durante a implementação. A aplicação trata respostas com `meals: null`, timeout, problemas de rede, JSON inválido e imagens indisponíveis.
 
@@ -75,7 +75,7 @@ No Android, a permissão `INTERNET` já está declarada no manifesto principal.
 ```text
 lib/
 ├── models/       # summaries, detalhes, categorias e dados editoriais
-├── screens/      # Home, Busca, Detalhes, Favoritos, Descobrir, Perfil e Chat
+├── screens/      # Home, Busca, Detalhes, Favoritos, Descobrir e Perfil
 ├── services/     # TheMealDB e persistência local de favoritos
 ├── theme/        # tokens visuais centralizados
 └── widgets/      # cards, estados assíncronos e navegação reutilizável

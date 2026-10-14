@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app_controllers.dart';
-import 'screens/chat_page.dart';
 import 'screens/favorites_page.dart';
 import 'screens/home_page.dart';
 import 'screens/profile_page.dart';
@@ -54,7 +53,6 @@ class AppShell extends StatelessWidget {
       HomePage(),
       SearchPage(),
       FavoritesPage(),
-      ChatPage(),
       ProfilePage(),
     ];
     return Scaffold(

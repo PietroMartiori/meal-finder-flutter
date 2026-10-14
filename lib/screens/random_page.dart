@@ -68,27 +68,9 @@ class _RandomPageState extends State<RandomPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Descobrir',
-                        style: Theme.of(context).textTheme.displaySmall,
-                      ),
-                    ),
-                    Container(
-                      width: 54,
-                      height: 54,
-                      decoration: BoxDecoration(
-                        color: AppTheme.softSurface,
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: const Icon(
-                        Icons.shuffle_rounded,
-                        color: AppTheme.primary,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Descobrir',
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(height: 25),
                 Container(
@@ -130,6 +112,7 @@ class _RandomPageState extends State<RandomPage> {
                 ),
                 const SizedBox(height: 40),
                 _RandomMealCard(
+                  key: ValueKey(meal.idMeal),
                   meal: meal,
                   onOpen: () => _openDetail(meal.idMeal),
                 ),
@@ -160,7 +143,7 @@ class _RandomPageState extends State<RandomPage> {
 }
 
 class _RandomMealCard extends StatelessWidget {
-  const _RandomMealCard({required this.meal, required this.onOpen});
+  const _RandomMealCard({super.key, required this.meal, required this.onOpen});
   final MealDetail meal;
   final VoidCallback onOpen;
 
