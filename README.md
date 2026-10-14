@@ -14,6 +14,10 @@ A interface foi construída a partir dos wireframes fornecidos: fundo claro, car
 
 Os sete wireframes originais continuam versionados em [`tmp/pdfs`](tmp/pdfs). Eles documentam as telas de Início, Busca, Favoritos, Descobrir, Perfil, Detalhes e as decisões técnicas que nortearam a implementação.
 
+| Início | Buscar | Detalhes |
+| --- | --- | --- |
+| <img src="tmp/pdfs/figma-wireframes-1.png" alt="Wireframe da tela inicial" width="180"> | <img src="tmp/pdfs/figma-wireframes-2.png" alt="Wireframe da tela de busca" width="180"> | <img src="tmp/pdfs/figma-wireframes-7.png" alt="Wireframe de detalhes da receita" width="180"> |
+
 ## Tecnologias
 
 - Flutter e Dart
