@@ -1,71 +1,99 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../models/meal.dart';
+import '../models/editorial_metadata.dart';
+import '../models/meal_summary.dart';
+import '../services/favorites_service.dart';
 import '../theme/app_theme.dart';
 
-/// Cartão compacto usado na grade de destaques da Home.
 class MealCard extends StatelessWidget {
-  const MealCard({super.key, required this.meal});
+  const MealCard({
+    super.key,
+    required this.meal,
+    required this.onTap,
+    this.compact = false,
+  });
 
-  final Meal meal;
+  final MealSummary meal;
+  final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final isFavorite = context.select<FavoritesService, bool>(
+      (service) => service.contains(meal.idMeal),
+    );
+    final editorial = EditorialMetadata.forMeal(meal);
+
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(compact ? 18 : 22),
       child: InkWell(
-        onTap: () {},
-        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(compact ? 18 : 22),
         child: Ink(
           decoration: BoxDecoration(
             border: Border.all(color: AppTheme.line),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(compact ? 18 : 22),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x08000000),
+                blurRadius: 14,
+                offset: Offset(0, 6),
+              ),
+            ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(compact ? 18 : 22),
             child: Stack(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: SizedBox.expand(
-                        child: Image.network(
-                          meal.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const ColoredBox(
-                            color: AppTheme.softSurface,
-                            child: Center(
-                              child: Icon(Icons.restaurant_rounded, color: AppTheme.primary, size: 36),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    Expanded(child: MealImage(imageUrl: meal.strMealThumb)),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+                      padding: EdgeInsets.fromLTRB(
+                        compact ? 12 : 14,
+                        11,
+                        12,
+                        compact ? 11 : 14,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            meal.name,
-                            maxLines: 2,
+                            meal.strMeal,
+                            maxLines: compact ? 2 : 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.ink,
-                              fontSize: 13.5,
+                              fontSize: compact ? 13.5 : 15,
+                              height: 1.15,
                               fontWeight: FontWeight.w800,
-                              height: 1.13,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            '${meal.area} · ${meal.category}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: AppTheme.mutedText, fontSize: 11.5),
-                          ),
+                          const SizedBox(height: 7),
+                          if (meal.strArea.isNotEmpty ||
+                              meal.strCategory.isNotEmpty)
+                            Text(
+                              _mealSubtitle(meal),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppTheme.mutedText,
+                                fontSize: 11.5,
+                              ),
+                            )
+                          else if (!compact)
+                            Text(
+                              '★ ${editorial.rating.toStringAsFixed(1)}  ·  ${editorial.preparationMinutes} min',
+                              style: const TextStyle(
+                                color: AppTheme.mutedText,
+                                fontSize: 11.5,
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -74,16 +102,91 @@ class MealCard extends StatelessWidget {
                 Positioned(
                   top: 9,
                   right: 9,
-                  child: Container(
-                    width: 31,
-                    height: 31,
-                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: const Icon(Icons.favorite_border_rounded, color: AppTheme.ink, size: 18),
+                  child: _FavoriteButton(
+                    mealId: meal.idMeal,
+                    isFavorite: isFavorite,
                   ),
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  String _mealSubtitle(MealSummary item) {
+    final labels = <String>[
+      if (item.strCategory.isNotEmpty) ApiValueMapper.label(item.strCategory),
+      if (item.strArea.isNotEmpty) ApiValueMapper.label(item.strArea),
+    ];
+    return labels.join(' · ');
+  }
+}
+
+class MealImage extends StatelessWidget {
+  const MealImage({super.key, required this.imageUrl, this.borderRadius});
+
+  final String imageUrl;
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget fallback() => const ColoredBox(
+      color: AppTheme.softSurface,
+      child: Center(
+        child: Icon(
+          Icons.restaurant_rounded,
+          color: AppTheme.primary,
+          size: 38,
+        ),
+      ),
+    );
+
+    final image = imageUrl.isEmpty
+        ? fallback()
+        : CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            placeholder: (_, _) => const ColoredBox(
+              color: Color(0xFFF0F1F2),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.primary,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+            errorWidget: (_, _, _) => fallback(),
+          );
+    return borderRadius == null
+        ? image
+        : ClipRRect(borderRadius: borderRadius!, child: image);
+  }
+}
+
+class _FavoriteButton extends StatelessWidget {
+  const _FavoriteButton({required this.mealId, required this.isFavorite});
+
+  final String mealId;
+  final bool isFavorite;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      child: IconButton(
+        tooltip: isFavorite
+            ? 'Remover dos favoritos'
+            : 'Adicionar aos favoritos',
+        onPressed: () async => context.read<FavoritesService>().toggle(mealId),
+        icon: Icon(
+          isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+          color: isFavorite ? AppTheme.primary : AppTheme.ink,
+          size: 21,
         ),
       ),
     );

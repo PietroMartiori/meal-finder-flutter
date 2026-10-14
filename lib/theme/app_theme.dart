@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color primary = Color(0xFFFF6B3D);
-  static const Color ink = Color(0xFF202124);
+  static const Color primary = Color(0xFFFF6B35);
+  static const Color ink = Color(0xFF1A1A1A);
   static const Color mutedText = Color(0xFF858990);
-  static const Color background = Color(0xFFF8F9FB);
+  static const Color background = Color(0xFFF8F9FA);
   static const Color softSurface = Color(0xFFFFEEE8);
   static const Color line = Color(0xFFE8EAED);
 
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: background,
+    fontFamily: 'Roboto',
     colorScheme: ColorScheme.fromSeed(
       seedColor: primary,
       brightness: Brightness.light,
@@ -44,6 +45,22 @@ class AppTheme {
       ),
       bodyLarge: TextStyle(color: mutedText, fontSize: 16, height: 1.35),
       bodyMedium: TextStyle(color: mutedText, fontSize: 14),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+        minimumSize: const Size.fromHeight(58),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: Colors.white,
+      side: const BorderSide(color: line),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      labelStyle: const TextStyle(color: ink, fontWeight: FontWeight.w700),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: ink,
